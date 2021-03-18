@@ -1,1 +1,2 @@
 export { CancelablePromise, takeLastestPromise } from './promise';
+export { getPropertyByPath, createEqualProperties } from './object';
