@@ -1,2 +1,1 @@
-# hardcore-react-utils
-Hardcore react utils
+# vcc-utils
