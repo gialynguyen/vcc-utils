@@ -1,5 +1,5 @@
 import { IObject } from "../@types";
-import { isArray, isFunction, isNull, isString } from "../utils";
+import { isArray, isFunction, isObject, isString } from "../utils";
 
 type PickObject<O extends IObject, Keys extends keyof O> = Pick<O, Keys>;
 
@@ -50,6 +50,48 @@ export function pick<O extends IObject, Keys extends keyof O>(
       (!pickFn || !isFunction(pickFn) || pickFn(keyValue, key, value))
     ) {
       picked[key] = keyValue;
+    }
+  }
+
+  return picked;
+}
+
+export type PickBySchema<Origin extends IObject> = {
+  [P in keyof Origin]?: Origin[P] extends object
+    ? PickBySchema<Origin[P]>
+    : boolean;
+};
+
+export type PickBy<Origin, Schema> = Pick<
+  Origin,
+  {
+    [Key in keyof Schema]-?: Key extends keyof Origin
+      ? Schema[Key] extends Exclude<boolean, false>
+        ? Key
+        : never
+      : never;
+  }[keyof Schema]
+>;
+
+export function pickBy<O extends IObject, Schema extends PickBySchema<O>>(
+  value: O,
+  schema: Schema
+): PickBy<O, Schema> {
+  const picked = {} as any;
+  for (const pickedKey in value) {
+    if (
+      Object.prototype.hasOwnProperty.call(schema, pickedKey) &&
+      Object.prototype.hasOwnProperty.call(value, pickedKey)
+    ) {
+      const currentSchemaValue = schema[pickedKey];
+      const currentValue = value[pickedKey];
+      if (currentSchemaValue === true) {
+        picked[pickedKey] = currentValue;
+      }
+
+      if (isObject(currentValue) && isObject(currentSchemaValue)) {
+        picked[pickedKey] = pickBy(currentValue, currentSchemaValue as any);
+      }
     }
   }
 
