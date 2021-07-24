@@ -1,5 +1,5 @@
 import { IObject } from "../@types";
-import { isArray, isFunction, isNull, isString } from "../utils";
+import { isArray, isFunction, isObject, isString } from "../utils";
 
 type OmitObject<O extends IObject, Keys extends keyof O> = Pick<
   O,
@@ -57,4 +57,49 @@ export function omit<O extends IObject, Keys extends keyof O>(
   }
 
   return omitted;
+}
+
+export type OmitBySchema<Origin extends IObject> = {
+  [P in keyof Origin]?: Origin[P] extends object
+    ? OmitBySchema<Origin[P]>
+    : boolean;
+};
+
+export type OmitBy<Origin, Schema> = Omit<
+  Origin,
+  {
+    [Key in keyof Schema]-?: Key extends keyof Origin
+      ? Schema[Key] extends Exclude<boolean, false>
+        ? Key
+        : never
+      : never;
+  }[keyof Schema]
+>;
+
+export function omitBy<O extends IObject, Schema extends OmitBySchema<O>>(
+  value: O,
+  schema: Schema
+): OmitBy<O, Schema> {
+  const picked = {} as any;
+  for (const pickedKey in value) {
+    const currentValue = value[pickedKey];
+
+    if (
+      Object.prototype.hasOwnProperty.call(schema, pickedKey) &&
+      Object.prototype.hasOwnProperty.call(value, pickedKey)
+    ) {
+      const currentSchemaValue = schema[pickedKey];
+      if (currentSchemaValue !== true) {
+        picked[pickedKey] = currentValue;
+      }
+
+      if (isObject(currentValue) && isObject(currentSchemaValue)) {
+        picked[pickedKey] = omitBy(currentValue, currentSchemaValue as any);
+      }
+    } else {
+      picked[pickedKey] = currentValue;
+    }
+  }
+
+  return picked;
 }
