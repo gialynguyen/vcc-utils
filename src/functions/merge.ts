@@ -1,11 +1,5 @@
-import { IObject } from "../@types";
+import { IObject, TUnionToIntersection } from "../@types";
 import { isObject } from "../utils";
-
-type TUnionToIntersection<U> = (
-  U extends any ? (k: U) => void : never
-) extends (k: infer I) => void
-  ? I
-  : never;
 
 export const merge = <T extends IObject[]>(
   ...objects: T
