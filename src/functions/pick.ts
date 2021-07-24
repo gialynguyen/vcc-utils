@@ -58,7 +58,7 @@ export function pick<O extends IObject, Keys extends keyof O>(
 
 export type PickBySchema<Origin extends IObject> = {
   [P in keyof Origin]?: Origin[P] extends object
-    ? PickBySchema<Origin[P]>
+    ? PickBySchema<Origin[P]> | boolean
     : boolean;
 };
 
