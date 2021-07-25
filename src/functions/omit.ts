@@ -60,8 +60,10 @@ export function omit<O extends IObject, Keys extends keyof O>(
 }
 
 export type OmitBySchema<Origin extends IObject> = {
-  [P in keyof Origin]?: Origin[P] extends object
-    ? OmitBySchema<Origin[P]> | boolean
+  [P in keyof Origin]?: Origin[P] extends IObject
+    ? Origin[P] extends any[]
+      ? boolean
+      : OmitBySchema<Origin[P]> | boolean
     : boolean;
 };
 

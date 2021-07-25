@@ -8,7 +8,10 @@ const omittedFilter = omit({ name: "gialynguyen", age: 12 }, (_, key) => {
   return false;
 });
 
-const omittedBy = omitBy({ name: "gialynguyen", age: 12 }, { name: true });
+const omittedBy = omitBy(
+  { name: "gialynguyen", age: 12, addressIds: ["001"] },
+  { addressIds: true }
+);
 
 console.log("omitted: ", omitted);
 console.log("omittedFilter: ", omittedFilter);

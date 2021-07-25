@@ -9,10 +9,14 @@ const pickerFunction = pick({ name: "gialynguyen", age: 12 }, (_, key) => {
 });
 
 const pickedBy = pickBy(
-  { name: "gialynguyen", age: 12, address: { name: "my home", detail: "Nha Trang" } },
+  {
+    name: "gialynguyen",
+    age: 12,
+    address: { name: "my home", detail: "Nha Trang" },
+  },
   { name: true, address: { name: true } }
 );
 
 console.log("picked: ", picked);
 console.log("pickerFunction: ", pickerFunction);
-console.log("pickedBy: ", pickedBy)
+console.log("pickedBy: ", pickedBy);
