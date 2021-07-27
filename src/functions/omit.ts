@@ -1,4 +1,4 @@
-import { IObject } from "../@types";
+import { IObject, ObjectWithoutNullishProperty, Primitive } from "../@types";
 import { isArray, isFunction, isObject, isString } from "../utils";
 
 type OmitObject<O extends IObject, Keys extends keyof O> = Pick<
@@ -67,16 +67,24 @@ export type OmitBySchema<Origin extends IObject> = {
     : boolean;
 };
 
-export type OmitBy<Origin, Schema> = Omit<
-  Origin,
-  {
-    [Key in keyof Schema]-?: Key extends keyof Origin
-      ? Schema[Key] extends Exclude<boolean, false>
-        ? Key
-        : never
-      : never;
-  }[keyof Schema]
->;
+export type OmitBy<Origin, Schema> = Schema extends Primitive
+  ? Schema extends Exclude<boolean, false>
+    ? Origin
+    : never
+  : Omit<
+      {
+        [Key in keyof Origin]: Key extends keyof Schema
+          ? OmitBy<Origin[Key], Schema[Key]>
+          : Origin[Key];
+      },
+      {
+        [Key in keyof Schema]-?: Key extends keyof Origin
+          ? Schema[Key] extends Exclude<boolean, false>
+            ? Key
+            : never
+          : never;
+      }[keyof Schema]
+    >;
 
 export function omitBy<O extends IObject, Schema extends OmitBySchema<O>>(
   value: O,

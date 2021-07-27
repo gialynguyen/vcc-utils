@@ -1,4 +1,4 @@
-import { IObject } from "../@types";
+import { IObject, ObjectWithoutNullishProperty, Primitive } from "../@types";
 import { isArray, isFunction, isObject, isString } from "../utils";
 
 type PickObject<O extends IObject, Keys extends keyof O> = Pick<O, Keys>;
@@ -64,16 +64,25 @@ export type PickBySchema<Origin extends IObject> = {
     : boolean;
 };
 
-export type PickBy<Origin, Schema> = Pick<
-  Origin,
-  {
-    [Key in keyof Schema]-?: Key extends keyof Origin
-      ? Schema[Key] extends Exclude<boolean, false>
-        ? Key
-        : never
-      : never;
-  }[keyof Schema]
->;
+export type PickBy<Origin, Schema> = Origin extends Primitive
+  ? Origin
+  : Pick<
+      Origin,
+      {
+        [Key in keyof Schema]-?: Key extends keyof Origin
+          ? Schema[Key] extends Exclude<boolean, false>
+            ? Key
+            : never
+          : never;
+      }[keyof Schema]
+    > &
+      ObjectWithoutNullishProperty<
+        {
+          [Key in keyof Origin]: Key extends keyof Schema
+            ? PickBy<Origin[Key], Schema[Key]>
+            : undefined;
+        }
+      >;
 
 export function pickBy<O extends IObject, Schema extends PickBySchema<O>>(
   value: O,

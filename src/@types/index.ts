@@ -21,3 +21,25 @@ export type TUnionToIntersection<U> = (
 ) extends (k: infer I) => void
   ? I
   : never;
+
+export type Nullish = never | undefined | null | void;
+
+export type ObjectWithoutNullishProperty<O extends IObject> = Pick<
+  O,
+  {
+    [Key in keyof O]-?: Key extends keyof O
+      ? O[Key] extends Nullish
+        ? never
+        : Key
+      : never;
+  }[keyof O]
+>;
+
+export type Primitive =
+  | string
+  | number
+  | bigint
+  | boolean
+  | null
+  | undefined
+  | Symbol;

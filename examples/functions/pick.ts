@@ -19,4 +19,4 @@ const pickedBy = pickBy(
 
 console.log("picked: ", picked);
 console.log("pickerFunction: ", pickerFunction);
-console.log("pickedBy: ", pickedBy);
+console.log("pickedBy: ", pickedBy.address);
