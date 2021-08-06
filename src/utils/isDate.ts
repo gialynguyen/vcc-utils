@@ -1,6 +1,6 @@
 import { isArray } from "./isArray";
 
-export function isDate(value: any): boolean {
+export function isDate(value: any): value is Date {
   return (
     value != null &&
     typeof value === "object" &&

@@ -1,6 +1,6 @@
 import { isArray } from "./isArray";
 
-export function isNumber(value: any): boolean {
+export function isNumber(value: any): value is number {
   const valueType = typeof value;
   return (
     valueType === "number" ||

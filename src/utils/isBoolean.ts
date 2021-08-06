@@ -1,6 +1,6 @@
 import { isArray } from "./isArray";
 
-export function isBoolean(value: any): boolean {
+export function isBoolean(value: any): value is boolean {
   return (
     value === true ||
     value === false ||

@@ -1,3 +1,3 @@
-export function isNull(value: any): boolean {
-	return value === null;
+export function isNull(value: any): value is null {
+  return value === null;
 }
